@@ -8,12 +8,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(SOURCE_FILES main.cpp)
 
 add_definitions(-DSFML_STATIC)
-add_executable(game main.cpp inc/src/classes.cpp inc/src/classes.hpp)
-include_directories(inc/src)
-include_directories(inc/img)
+add_executable(game main.cpp src/classes.cpp src/classes.hpp)
+include_directories(src/)
 include_directories(/usr/local/include)
 
 
 include_directories(${SFML_INCLUDE_DIRS})
 find_package(SFML 2.5 COMPONENTS system window graphics network audio REQUIRED)
 target_link_libraries(game sfml-system sfml-window sfml-graphics sfml-audio sfml-network)
+
+file(COPY "inc" DESTINATION ".")
