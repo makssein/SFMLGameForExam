@@ -13,114 +13,92 @@ int main(){
     bool isPlaying = true;
     int best_score = 0;
 
-    std::fstream best_file("inc/files/best.txt");
-    if(best_file) {
-        best_file >> best_score;
-    } else {
-        std::ofstream best_file ("inc/files/best.txt");
-        best_file << best_score;
-    }
-
-
-    //creating dino
+    //uploading files
     sf::Texture dinotx;
+    dinotx.setSmooth(true);
     if(!dinotx.loadFromFile("inc/img/dino.png")){
         std::cout << "ERROR: dino.png not found";
+        return -1;
     }
-    sf::Texture dino_gameover;
-    if(!dino_gameover.loadFromFile("inc/img/dino_gameover.png")){
-        std::cout << "ERROR: dino_gameover.png not found";
-    }
-    myClasses::dino dino(dinotx, window.getSize().x, window.getSize().y);
 
-    //creating background
+
     sf::Texture back;
     back.setSmooth(true);
-    sf::Sprite background;
     if(!back.loadFromFile("inc/img/back.jpg")){
         std::cout << "ERROR: back.jpg not found";
         return -1;
     }
-    background.setTexture(back);
-    background.setScale(window.getSize().x/background.getLocalBounds().width,
-                        window.getSize().y/background.getLocalBounds().height
-    );
 
-    //creating road
+    sf::Texture dino_gameover;
+    dino_gameover.setSmooth(true);
+    if(!dino_gameover.loadFromFile("inc/img/dino_gameover.png")){
+        std::cout << "ERROR: dino_gameover.png not found";
+        return -1;
+    }
+
     sf::Texture road;
-    sf::Sprite roadsp;
     road.setSmooth(true);
     if(!road.loadFromFile("inc/img/road.png")){
         std::cout << "ERROR: road.png not found";
         return -1;
     }
-    roadsp.setTexture(road);
-    roadsp.setScale(1,
-                    0.2
-                    );
-    roadsp.setPosition(0, window.getSize().y-roadsp.getLocalBounds().height*roadsp.getScale().y);
 
-    //creating trees
     sf::Texture treetx;
     treetx.setSmooth(true);
     if(!treetx.loadFromFile("inc/img/tree.png")){
         std::cout << "ERROR: tree.png not found";
         return -1;
     }
-    std::vector<myClasses::tree*> trees;
-    for(int i = 0; i < 3; i++){
-        trees.push_back(new myClasses::tree(treetx, window.getSize().x+(rand()%(1920-1080)+1080)*i, window.getSize().y));
-    }
 
-    //creating text
     sf::Font font;
     if (!font.loadFromFile("inc/fonts/font.otf")){
         std::cout << "ERROR: font was not loaded." << std::endl;
         return -1;
     }
 
-    sf::Color color_Text = sf::Color(243, 118, 68);
-
     sf::Texture score_textTexture;
-    sf::Sprite score_textSprite;
+    score_textTexture.setSmooth(true);
     if (!score_textTexture.loadFromFile("inc/img/score.png")) {
         std::cout << "ERROR: score.png was not loaded." << std::endl;
         return -1;
     }
-    score_textTexture.setSmooth(true);
-    score_textSprite.setTexture(score_textTexture);
-    score_textSprite.setScale(0.2,0.2);
-    score_textSprite.setPosition(20,0);
-
 
     sf::Texture bestScore_textTexture;
-    sf::Sprite bestScore_textSprite;
+    bestScore_textTexture.setSmooth(true);
     if (!bestScore_textTexture.loadFromFile("inc/img/best_score.png")) {
         std::cout << "ERROR: best_score.png was not loaded." << std::endl;
         return -1;
     }
-    bestScore_textTexture.setSmooth(true);
-    bestScore_textSprite.setTexture(bestScore_textTexture);
-    bestScore_textSprite.setScale(0.2,0.2);
-    bestScore_textSprite.setPosition(0,score_textTexture.getSize().y*score_textSprite.getScale().y);
+    // end uploading files
 
-    sf::Text scoreText;
-    scoreText.setFont(font);
-    scoreText.setString("");
-    scoreText.setCharacterSize(100);
-    scoreText.setFillColor(color_Text);
-    scoreText.setPosition(score_textTexture.getSize().x*score_textSprite.getScale().x+50,10);
+    sf::Color color_Text = sf::Color(243, 118, 68);
 
-    sf::Text best_scoreText;
-    best_scoreText.setFont(font);
-    best_scoreText.setString("");
-    best_scoreText.setCharacterSize(100);
-    best_scoreText.setFillColor(color_Text);
-    best_scoreText.setPosition(0, scoreText.getCharacterSize());
-    best_scoreText.setPosition(bestScore_textTexture.getSize().x*bestScore_textSprite.getScale().x+50,
-                               score_textTexture.getSize().y*score_textSprite.getScale().y+10);
+    //creating objects
+    std::vector<myClasses::tree*> trees;
+    for(int i = 0; i < 3; i++){
+        trees.push_back(new myClasses::tree(treetx, window.getSize().x+(rand()%(1920-1080)+1080)*i, window.getSize().y));
+    }
 
+    myClasses::dino dino(dinotx, window.getSize().x, window.getSize().y);
 
+    myClasses::mySprite roadsp(road,1,0.2,0,window.getSize().y-road.getSize().y*0.2);
+
+    myClasses::mySprite score_text(score_textTexture,0.2,0.2,20,0);
+
+    myClasses::mySprite background(back,static_cast<double>(window.getSize().x)/back.getSize().x,
+                                   static_cast<double>(window.getSize().y)/back.getSize().y,0,0);
+
+    myClasses::mySprite bestScore_text(bestScore_textTexture,0.2,0.2,0,
+                                       score_textTexture.getSize().y*0.2);
+
+    myClasses::myText scoreText(font, std::to_string(score),100,color_Text,
+                                score_textTexture.getSize().x*0.2+50,10);
+
+    myClasses::myText bestScoreText(font,std::to_string(best_score),100,color_Text,
+                                    bestScore_textTexture.getSize().x*0.2+50,score_textTexture.getSize().y*0.2+10);
+
+    myClasses::myText textGameover(font,"",50,color_Text,window.getSize().x/2,25);
+    //end creating objects
 
     while (window.isOpen()){
         sf::Event event;
@@ -142,10 +120,12 @@ int main(){
                             score = 0;
                             isPlaying = true;
                             dino.newTexture(dinotx);
+                            textGameover.newString("");
                         }
                     }
             }
         }
+
         if(jump){
             dino.jump(t,jump, window.getSize().y);
         }
@@ -174,25 +154,26 @@ int main(){
                     score = score;
                     if(score > best_score) {
                         best_score = score;
-                        best_file << score;
-                        best_file.close();
                     }
+                    textGameover.newString("You lose\n"
+                                         "Press R to replay");
                     break;
                 } else score++;
             }
         }
         window.clear();
-        window.draw(background);
-        window.draw(roadsp);
+        window.draw(*background.get());
+        window.draw(*roadsp.get());
         for(const auto& tree : trees)
             window.draw(*tree->get());
         window.draw(*dino.get());
-        scoreText.setString(std::to_string(score));
-        best_scoreText.setString(std::to_string(best_score));
-        window.draw(score_textSprite);
-        window.draw(bestScore_textSprite);
-        window.draw(best_scoreText);
-        window.draw(scoreText);
+        scoreText.newString(std::to_string(score));
+        bestScoreText.newString(std::to_string(best_score));
+        window.draw(*scoreText.get());
+        window.draw(*bestScoreText.get());
+        window.draw(*bestScore_text.get());
+        window.draw(*score_text.get());
+        window.draw(*textGameover.get());
         window.display();
 
         t+=0.7;
