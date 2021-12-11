@@ -115,8 +115,8 @@ int main(){
                     }
                     if(event.key.code == sf::Keyboard::R){
                         if(!isPlaying){
-                            for(const auto& tree : trees)
-                                tree->setX(window.getSize().x+rand()%(7000-4000)+3000);
+                            for(int i = 0; i < trees.size(); i++)
+                                trees[i]->setX(window.getSize().x+(rand()%(1920-1080)+1080)*i);
                             score = 0;
                             isPlaying = true;
                             dino.newTexture(dinotx);
