@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include <classes.hpp>
-#include <fstream>
 
 int main(){
     srand(time(0));
@@ -155,7 +154,7 @@ int main(){
                     if(score > best_score) {
                         best_score = score;
                     }
-                    textGameover.newString("You lose\n"
+                    textGameover.newString("You lost\n"
                                          "Press R to replay");
                     break;
                 } else score++;
